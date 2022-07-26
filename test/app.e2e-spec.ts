@@ -1,10 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import { PrismaService } from '../src/prisma/prisma.service';
+import { AuthDto } from 'src/auth/dto';
+import * as pactum from 'pactum';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
+  let prisma: PrismaService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -18,9 +21,61 @@ describe('AppController (e2e)', () => {
       }),
     );
     await app.init();
+    await app.listen(3333);
+
+    prisma = app.get(PrismaService);
+    await prisma.cleanDb();
+
+    pactum.request.setBaseUrl('http://localhost:3333');
   });
 
-  it.todo('should pass');
+  describe('Auth', () => {
+    const dto: AuthDto = {
+      email: 'foo@baz.com',
+      password: 'foobaz',
+    };
+    describe('Signup', () => {
+      it('should throw if email empty', () => {
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody({ password: dto.password })
+          .expectStatus(400);
+      });
+      it('should throw if body empty', () => {
+        return pactum.spec().post('/auth/signup').expectStatus(400);
+      });
+      it('should signup', async () => {
+        return pactum
+          .spec()
+          .post('/auth/signup')
+          .withBody(dto)
+          .expectStatus(201);
+      });
+    });
+    describe('Signin', () => {
+      it('should signin', async () => {
+        return pactum
+          .spec()
+          .post('/auth/signin')
+          .withBody(dto)
+          .expectStatus(200)
+          .stores('userAt', 'token');
+      });
+    });
+  });
+
+  describe('User', () => {
+    it('should get current user', () => {
+      return pactum
+        .spec()
+        .get('/users/me')
+        .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+        .expectStatus(200);
+    });
+  });
+
+  describe('Bookmark', () => {});
 
   afterAll(async () => {
     await app.close();
