@@ -9,12 +9,15 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from '../auth/decorator';
 import { JwtGuard } from '../auth/guard';
 import { CreateNoteDto } from './dto';
 import { EditNoteDto } from './dto/edit-note.dto';
 import { NoteService } from './note.service';
 
+@ApiBearerAuth()
+@ApiTags('notes')
 @UseGuards(JwtGuard)
 @Controller('notes')
 export class NoteController {
