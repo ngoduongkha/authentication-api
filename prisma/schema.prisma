@@ -21,22 +21,21 @@ model User {
   firstName String?
   lastName  String?
 
-  bookmarks Bookmark[]
+  notes Note[]
 
   @@map("users")
 }
 
-model Bookmark {
+model Note {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   title       String
   description String?
-  link        String
 
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("bookmarks")
+  @@map("notes")
 }

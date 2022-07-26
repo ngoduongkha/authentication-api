@@ -5,6 +5,7 @@ import { PrismaService } from '../src/prisma/prisma.service';
 import { AuthDto } from 'src/auth/dto';
 import * as pactum from 'pactum';
 import { EditUserDto } from 'src/user/dto';
+import { CreateNoteDto } from 'src/note/dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -78,7 +79,7 @@ describe('AppController (e2e)', () => {
     it('should update user info', () => {
       const dto: EditUserDto = {
         email: 'baz@foo.com',
-        firstName: 'baz',
+        firstName: 'bar',
         lastName: 'foo',
       };
       return pactum
@@ -90,6 +91,21 @@ describe('AppController (e2e)', () => {
         .expectBodyContains(dto.email)
         .expectBodyContains(dto.firstName)
         .expectBodyContains(dto.lastName);
+    });
+  });
+
+  describe('Note Controller', () => {
+    const dto: CreateNoteDto = {
+      title: 'foo note',
+      description: 'baz note',
+    };
+    it('should create new note', () => {
+      return pactum
+        .spec()
+        .post('/notes')
+        .withHeaders({ Authorization: 'Bearer $S{userAt}' })
+        .withBody(dto)
+        .expectStatus(201);
     });
   });
 
