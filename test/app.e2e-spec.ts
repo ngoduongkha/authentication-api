@@ -32,7 +32,7 @@ describe('AppController (e2e)', () => {
     pactum.request.setBaseUrl('http://localhost:3333');
   });
 
-  describe('Auth', () => {
+  describe('Auth Controller', () => {
     const dto: AuthDto = {
       email: 'foo@baz.com',
       password: 'foobaz',
@@ -137,7 +137,7 @@ describe('AppController (e2e)', () => {
     });
   });
 
-  describe('User', () => {
+  describe('User Controller', () => {
     describe('Get user info', () => {
       it('should throw if access token not provided', () => {
         return pactum.spec().get('/users/me').expectStatus(401);
