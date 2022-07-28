@@ -16,3 +16,12 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 101001
       POSTGRES_DB: nest
+  back-end:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prisma-postgres-api
+    depends_on:
+      - dev-db
+    ports:
+      - "3000:3000"
