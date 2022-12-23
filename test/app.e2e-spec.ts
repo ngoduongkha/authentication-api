@@ -82,14 +82,14 @@ describe('AppController (e2e)', () => {
       });
     });
 
-    describe('Signin', () => {
+    describe('Login', () => {
       it('should throw if body not provided', () => {
-        return pactum.spec().post('/auth/signin').expectStatus(400);
+        return pactum.spec().post('/auth/login').expectStatus(400);
       });
       it('should throw if email empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody({ password: dto.password })
           .expectStatus(400)
           .expectBodyContains('Email is not provided');
@@ -97,7 +97,7 @@ describe('AppController (e2e)', () => {
       it('should throw if password empty', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody({ email: dto.email })
           .expectStatus(400)
           .expectBodyContains('Password is not provided');
@@ -105,7 +105,7 @@ describe('AppController (e2e)', () => {
       it('should throw if email not valid', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody({ email: 'foobaz.com', password: dto.password })
           .expectStatus(400)
           .expectBodyContains('Email is not valid');
@@ -113,7 +113,7 @@ describe('AppController (e2e)', () => {
       it('should throw if wrong email', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody({ email: 'abc@mail.com', password: dto.password })
           .expectStatus(403)
           .expectBodyContains('Incorrect email or password');
@@ -121,15 +121,15 @@ describe('AppController (e2e)', () => {
       it('should throw if wrong password', () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody({ email: dto.email, password: 'foobazzzz' })
           .expectStatus(403)
           .expectBodyContains('Incorrect email or password');
       });
-      it('should signin', async () => {
+      it('should login', async () => {
         return pactum
           .spec()
-          .post('/auth/signin')
+          .post('/auth/login')
           .withBody(dto)
           .expectStatus(200)
           .stores('accessToken', 'token');

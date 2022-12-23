@@ -8,7 +8,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const config = new DocumentBuilder()
-    .setTitle('Authenication and note management API')
+    .setTitle('Authentication and note management API')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
